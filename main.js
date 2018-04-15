@@ -10,6 +10,10 @@ $(document).ready(function() {
 
 // Twitch Streamers object
 function Streamers(streamers) {
+  var api_key = '?client_id=fdnj189hn9cwh5etw8j353v1iejl5ve';
+  var urlStream = "https://api.twitch.tv/kraken/streams/";
+  var urlChannel = 'https://api.twitch.tv/kraken/channels/'
+
   this.streamers = streamers ? JSON.parse(streamers) : [];
 
   /**
@@ -22,6 +26,19 @@ function Streamers(streamers) {
       return;
     }
     
+    $.ajax({
+      type: 'get',
+      dataType: 'json',
+      url: urlChannel + streamer + api_key,
+      success: function() {
+        $('.error').text('').hide();
+      },
+      error: function(err) {
+        $('.error').text('User not found').css('display', 'flex');
+        return;
+      }
+    });
+
     this.streamers.push(streamer);
     localStorage.setItem('streamers', JSON.stringify(this.streamers));
   }
