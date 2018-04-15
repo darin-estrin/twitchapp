@@ -22,24 +22,24 @@ function Streamers(streamers) {
    * adds a streamer to the users list of streamers
    */
   this.addStreamer = function(streamer) {
-    if (this.streamers.indexOf(streamer) > 0) {
+    if (this.streamers.indexOf(streamer) > -1) {
+      $('.error').text('User Already Exist').css('display', 'flex');
       return;
     }
-    
+
     $.ajax({
       type: 'get',
       dataType: 'json',
       url: urlChannel + streamer + api_key,
       success: function() {
         $('.error').text('').hide();
-      },
+        this.streamers.push(streamer);
+        localStorage.setItem('streamers', JSON.stringify(this.streamers));
+      }.bind(this),
       error: function(err) {
         $('.error').text('User not found').css('display', 'flex');
         return;
       }
     });
-
-    this.streamers.push(streamer);
-    localStorage.setItem('streamers', JSON.stringify(this.streamers));
   }
 }
