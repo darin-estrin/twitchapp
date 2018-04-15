@@ -1,5 +1,5 @@
 $(document).ready(function() {
-  var streamers = new Streamers();
+  var streamers = new Streamers(localStorage.getItem('streamers'));
 
   $('.add-streamers').on('submit', function(e) {
     e.preventDefault();
@@ -10,7 +10,7 @@ $(document).ready(function() {
 
 // Twitch Streamers object
 function Streamers(streamers) {
-  this.streamers = [];
+  this.streamers = streamers ? JSON.parse(streamers) : [];
 
   /**
    * 
@@ -21,7 +21,7 @@ function Streamers(streamers) {
     if (this.streamers.indexOf(streamer) > 0) {
       return;
     }
-
+    
     this.streamers.push(streamer);
     localStorage.setItem('streamers', JSON.stringify(this.streamers));
   }
