@@ -107,6 +107,13 @@ body {
   right: -30px;
 }
 
+.delete {
+  border: none;
+  color: #63469F;
+  cursor: pointer;
+  font-weight: bolder;
+}
+
 @media screen and (max-width: 650px) {
 
   .wrapper {
