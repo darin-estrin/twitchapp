@@ -1,6 +1,8 @@
 $(document).ready(function() {
   var streamers = new Streamers(localStorage.getItem('streamers'));
 
+  streamers.appendStreamersToDOM();
+
   $('.add-streamers').on('submit', function(e) {
     e.preventDefault();
     streamers.addStreamer(e.target[0].value);
@@ -57,9 +59,22 @@ function Streamers(streamers) {
       success: function(data) {
         if (data.stream) {
           this.streamStatus(data.stream, true);
+        } else {
+          console.log(data);
         }
       }.bind(this)
     });
+  }
+
+  this.appendStreamersToDOM = function() {
+    if (this.streamers.length < 1) {
+      console.log('no streamers on load');
+      return;
+    }
+
+    this.streamers.forEach(function(streamer) {
+      this.appendStreamer(streamer);
+    }.bind(this));
   }
 
   /**
