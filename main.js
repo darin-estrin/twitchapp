@@ -35,11 +35,56 @@ function Streamers(streamers) {
         $('.error').text('').hide();
         this.streamers.push(streamer);
         localStorage.setItem('streamers', JSON.stringify(this.streamers));
+        this.appendStreamer(streamer);
       }.bind(this),
       error: function(err) {
         $('.error').text('User not found').css('display', 'flex');
         return;
       }
     });
+  }
+
+  /**
+   * 
+   * @param {string} streamer 
+   * @method adds a streamer to the DOM
+   */
+  this.appendStreamer = function(streamer) {
+    $.ajax({
+      type: 'get',
+      dataType: 'json',
+      url: urlStream + streamer + api_key,
+      success: function(data) {
+        if (data.stream) {
+          this.streamStatus(data.stream, true);
+        }
+      }.bind(this)
+    });
+  }
+
+  /**
+   * 
+   * @param {object} stream the stream object
+   * @param {boolean} live status of the streamer
+   */
+  this.streamStatus = function(stream, live) {
+    console.log(stream);
+    var streamStatus;
+    if (live) {
+      streamStatus = `
+        <div class="stream">
+          <a class="preview" href="${stream.channel.url}"><img src="${stream.preview.medium}"></a>
+          <h2 class="name">${stream.channel.display_name} is currently playing ${stream.channel.game}</h2>
+          <p class="status">
+            <a href="${stream.channel.url}">Watch live: ${stream.channel.status}</a>
+          </p>
+          <span class="details">
+            <p className="viewers">Viewers: ${stream.viewers}</p>
+            <button class="delete ${stream.channel.name}">Unfollow</button>
+          </span>
+        </div>
+      `;
+    }
+    $('.streams').append(streamStatus);
   }
 }
