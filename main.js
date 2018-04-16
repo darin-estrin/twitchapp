@@ -8,6 +8,10 @@ $(document).ready(function() {
     streamers.addStreamer(e.target[0].value);
     e.target[0].value = '';
   });
+
+  $('.error').on('click', '.close', function(e) {
+    $('.error').text('').css('display', 'none');
+  });
 });
 
 // Twitch Streamers object
@@ -25,7 +29,7 @@ function Streamers(streamers) {
    */
   this.addStreamer = function(streamer) {
     if (this.streamers.indexOf(streamer) > -1) {
-      $('.error').text('User Already Exist').css('display', 'flex');
+      $('.error').text('<p>User already exist</p><span class="close">X</span>').css('display', 'flex');
       return;
     }
 
@@ -40,7 +44,7 @@ function Streamers(streamers) {
         this.appendStreamer(streamer);
       }.bind(this),
       error: function(err) {
-        $('.error').text('User not found').css('display', 'flex');
+        $('.error').html('<p>User not found</p><span class="close">X</span>').css('display','flex');
         return;
       }
     });
@@ -60,7 +64,9 @@ function Streamers(streamers) {
         if (data.stream) {
           this.streamStatus(data.stream, true);
         } else {
-          console.log(data);
+          $.getJSON(urlChannel+streamer+api_key, function(data){
+            this.streamStatus(data, false);
+          }.bind(this));
         }
       }.bind(this)
     });
@@ -83,7 +89,6 @@ function Streamers(streamers) {
    * @param {boolean} live status of the streamer
    */
   this.streamStatus = function(stream, live) {
-    console.log(stream);
     var streamStatus;
     if (live) {
       streamStatus = `
@@ -94,8 +99,19 @@ function Streamers(streamers) {
             <a href="${stream.channel.url}">Watch live: ${stream.channel.status}</a>
           </p>
           <span class="details">
-            <p className="viewers">Viewers: ${stream.viewers}</p>
+            <p class="viewers">Viewers: ${stream.viewers}</p>
             <button class="delete ${stream.channel.name}">Unfollow</button>
+          </span>
+        </div>
+      `;
+    } else {
+      streamStatus = `
+        <div class="stream">
+          <a class="preview" href="${stream.url}"><img src="${stream.logo.toString()}"></a>
+          <h2 class="name">${stream.display_name} is currently offline</h2>
+          <span class="details">
+            <p class="viewers">Followers: ${stream.followers}</p>
+            <button class="delete ${stream.display_name}">Unfollow</button>
           </span>
         </div>
       `;
