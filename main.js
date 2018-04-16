@@ -48,7 +48,7 @@ function Streamers(streamers) {
       success: function(data) {
         // exits if attempting to add a streamer that is already being followed
         if (this.streamers.indexOf(data.display_name) > -1) {
-          $('.error').html('<p>Already follow Streamer</p><span class="close">X</span>').css('display', 'flex');
+          $('.error').html('<p>Already following streamer</p><span class="close">X</span>').css('display', 'flex');
           return;
         }
 
